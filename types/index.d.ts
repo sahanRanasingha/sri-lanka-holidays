@@ -106,6 +106,9 @@ export declare function getHolidayByDate(
 ): SriLankaHoliday | null;
 
 export declare function getUpcomingHolidays(
+  options?: UpcomingHolidayOptions
+): SriLankaHoliday[];
+export declare function getUpcomingHolidays(
   fromDate?: string | Date,
   options?: UpcomingHolidayOptions
 ): SriLankaHoliday[];
@@ -132,6 +135,6 @@ export declare function loadHolidaysFromJson(
 ): void;
 
 export declare function toDateString(dateInput: string | Date): string;
-export declare function getDayOfWeek(dateStr: string): DayOfWeek;
+export declare function getDayOfWeek(dateInput: string | Date): DayOfWeek;
 export declare function normalizeHolidayType(type: HolidayTypeInput): HolidayTypeValue;
 
