@@ -1,0 +1,30 @@
+name: Publish Dart/Flutter Package to pub.dev
+
+on:
+  release:
+    types: [published]
+  workflow_dispatch:
+
+permissions:
+  id-token: write
+  contents: read
+
+jobs:
+  publish-pubdev:
+    name: Publish to pub.dev
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: packages/dart
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: dart-lang/setup-dart@v1
+        with:
+          sdk: stable
+
+      - name: Obtain pub.dev OIDC token & publish
+        run: |
+          OIDC_TOKEN=$(curl -sLS "${ACTIONS_ID_TOKEN_REQUEST_URL}&audience=https://pub.dev" -H "Authorization: bearer ${ACTIONS_ID_TOKEN_REQUEST_TOKEN}" | jq -r '.value')
+          echo "$OIDC_TOKEN" | dart pub token add https://pub.dev
+          dart pub publish --force
