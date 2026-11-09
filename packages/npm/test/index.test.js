@@ -23,7 +23,9 @@ const {
   isPoyaDay,
   addHolidaysForYear,
   loadHolidaysFromJson,
-  getDayOfWeek
+  getDayOfWeek,
+  toDateString,
+  normalizeHolidayType
 } = require('../src/index');
 
 test('Built-in years 2026 and 2027 are loaded and validated', () => {
@@ -160,5 +162,181 @@ test('getUpcomingHolidays returns sorted upcoming holidays with optional limit a
   assert.equal(upcoming[0].date, '2026-12-23');
   assert.equal(upcoming[1].date, '2026-12-25');
   assert.equal(upcoming[2].date, '2027-01-15');
+});
+
+test('toDateString strictly validates format, calendar correctness, and Date instance bounds', () => {
+  // Valid strings
+  assert.equal(toDateString('2026-02-04'), '2026-02-04');
+  assert.equal(toDateString('  2026-12-25  '), '2026-12-25');
+
+  // Valid Date instances
+  const dateObj = new Date(2026, 3, 14); // April 14, 2026
+  assert.equal(toDateString(dateObj), '2026-04-14');
+
+  // Invalid formats and non-dates
+  assert.throws(() => toDateString('2026-2-4'), /Invalid date format/);
+  assert.throws(() => toDateString('04-02-2026'), /Invalid date format/);
+  assert.throws(() => toDateString('invalid'), /Invalid date format/);
+  assert.throws(() => toDateString(null), /Date input must be/);
+  assert.throws(() => toDateString(undefined), /Date input must be/);
+  assert.throws(() => toDateString(12345), /Date input must be/);
+  assert.throws(() => toDateString({}), /Date input must be/);
+  assert.throws(() => toDateString(new Date(NaN)), /Invalid Date object provided/);
+
+  // Invalid calendar dates (non-leap year Feb 29, April 31)
+  assert.throws(() => toDateString('2026-02-29'), /Invalid calendar date/);
+  assert.throws(() => toDateString('2026-04-31'), /Invalid calendar date/);
+});
+
+test('getDayOfWeek works with strings and Date objects and rejects invalid dates', () => {
+  assert.equal(getDayOfWeek('2026-02-04'), 'Wednesday');
+  assert.equal(getDayOfWeek(new Date(2026, 1, 4)), 'Wednesday');
+  assert.throws(() => getDayOfWeek('invalid-date'), /Invalid date format/);
+  assert.throws(() => getDayOfWeek(12345), /Date input must be/);
+});
+
+test('Security: prototype pollution and prototype key injection in loadHolidaysFromJson are safely rejected/ignored', () => {
+  // Test prototype key injection in object
+  const maliciousPayload = JSON.parse('{"__proto__": [{"date": "2030-01-01", "name": "Hack", "types": ["Public"]}]}');
+  loadHolidaysFromJson(maliciousPayload);
+  assert.equal(Object.prototype.hasOwnProperty.call(Object.prototype, 'date'), false);
+
+  // Test constructor / prototype key injection
+  const payload2 = {
+    constructor: [{ date: '2030-01-01', name: 'Hack', types: ['Public'] }]
+  };
+  loadHolidaysFromJson(payload2);
+  assert.equal(getSupportedYears().includes(NaN), false);
+});
+
+test('Security & Validation: loadHolidaysFromJson with array validates 4-digit year bounds', () => {
+  // Years outside 1000-9999 caught by toDateString
+  assert.throws(
+    () =>
+      loadHolidaysFromJson([
+        {
+          date: '0001-01-01',
+          name: 'Ancient Year',
+          types: ['Public']
+        }
+      ]),
+    /Invalid year "1"\. Expected a 4-digit year between 1000 and 9999/
+  );
+
+  // Years outside 1900-3000 caught by loadHolidaysFromJson bounds check
+  assert.throws(
+    () =>
+      loadHolidaysFromJson([
+        {
+          date: '1800-01-01',
+          name: 'Pre-1900 Year',
+          types: ['Public']
+        }
+      ]),
+    /Invalid year "1800" in holiday date "1800-01-01"\. Expected a 4-digit year between 1900 and 3000/
+  );
+
+  assert.throws(
+    () =>
+      loadHolidaysFromJson([
+        {
+          date: '3001-12-31',
+          name: 'Post-3000 Year',
+          types: ['Public']
+        }
+      ]),
+    /Invalid year "3001" in holiday date "3001-12-31"\. Expected a 4-digit year between 1900 and 3000/
+  );
+});
+
+test('Security & Validation: normalizeHolidayRecord detects day of week spoofing/mismatch', () => {
+  assert.throws(
+    () =>
+      addHolidaysForYear(2028, [
+        {
+          date: '2028-01-15',
+          day: 'Sunday', // 2028-01-15 is actually Saturday
+          name: 'Spoofed Day Test',
+          types: ['Public']
+        }
+      ]),
+    /has invalid day "Sunday"\. Expected "Saturday"/
+  );
+
+  assert.throws(
+    () =>
+      addHolidaysForYear(2028, [
+        {
+          date: '2028-01-15',
+          name: 'Invalid Poya Type Test',
+          types: ['Public'],
+          isPoya: 'not-a-boolean'
+        }
+      ]),
+    /"isPoya" property must be a boolean/
+  );
+});
+
+test('Holiday coincidence: multiple holidays on same date accurately report holiday types and poya', () => {
+  // Add a year with two distinct holidays on the same day:
+  // e.g. One is Bank only, the other is Mercantile and Poya
+  addHolidaysForYear(2030, [
+    {
+      date: '2030-05-15',
+      name: 'Vesak Full Moon Poya Day',
+      types: ['Public', 'Bank', 'Mercantile'],
+      isPoya: true
+    },
+    {
+      date: '2030-05-15',
+      name: 'Special Financial Day',
+      types: ['Bank'],
+      isPoya: false
+    }
+  ]);
+
+  assert.equal(isHoliday('2030-05-15'), true);
+  assert.equal(isPublicHoliday('2030-05-15'), true);
+  assert.equal(isBankHoliday('2030-05-15'), true);
+  assert.equal(isMercantileHoliday('2030-05-15'), true);
+  assert.equal(isPoyaDay('2030-05-15'), true);
+});
+
+test('getUpcomingHolidays handles options as first argument and validates limit', () => {
+  const upcomingDirectOpts = getUpcomingHolidays({ limit: 2, type: 'Public' });
+  assert.ok(Array.isArray(upcomingDirectOpts));
+  assert.ok(upcomingDirectOpts.length <= 2);
+
+  assert.throws(() => getUpcomingHolidays(new Date(), { limit: -1 }), /Invalid limit "-1"/);
+  assert.throws(() => getUpcomingHolidays({ limit: 'invalid' }), /Invalid limit "invalid"/);
+});
+
+test('Query functions handle null/invalid options gracefully without TypeError', () => {
+  const holidays = getHolidaysByYear(2026, null);
+  assert.equal(holidays.length, 26);
+
+  const monthHolidays = getHolidaysByMonth(2026, 1, null);
+  assert.equal(monthHolidays.length, 2);
+
+  assert.throws(() => getHolidays({ year: 'invalid-year' }), /Invalid year "invalid-year"/);
+  assert.throws(() => getHolidays([1, 2, 3]), /Invalid argument passed to getHolidays/);
+});
+
+test('addHolidaysForYear deduplicates exact duplicate entries cleanly', () => {
+  addHolidaysForYear(2031, [
+    {
+      date: '2031-01-15',
+      name: 'Thai Pongal',
+      types: ['Public', 'Bank', 'Mercantile']
+    },
+    {
+      date: '2031-01-15',
+      name: 'Thai Pongal',
+      types: ['Public', 'Bank', 'Mercantile']
+    }
+  ]);
+
+  const holidays2031 = getHolidays(2031);
+  assert.equal(holidays2031.length, 1);
 });
 
