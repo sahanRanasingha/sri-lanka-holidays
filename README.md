@@ -1,12 +1,16 @@
 # 🇱🇰 sri-lanka-holidays
 
 [![License: MIT](https://img.shields.io/badge/License-MIT-blue.svg)](./LICENSE)
-[![Node.js](https://img.shields.io/badge/node-%3E%3D16.0.0-brightgreen.svg)](https://nodejs.org)
-[![Zero Dependencies](https://img.shields.io/badge/dependencies-0-success.svg)](#)
-[![TypeScript](https://img.shields.io/badge/TypeScript-Ready-3178C6.svg)](./types/index.d.ts)
+[![npm version](https://img.shields.io/npm/v/sri-lanka-holidays?logo=npm&label=npm)](https://www.npmjs.com/package/sri-lanka-holidays)
+[![Packagist Version](https://img.shields.io/packagist/v/sahanranasingha/sri-lanka-holidays?logo=packagist&label=Packagist)](https://packagist.org/packages/sahanranasingha/sri-lanka-holidays)
+[![NuGet Version](https://img.shields.io/nuget/v/SriLankaHolidays?logo=nuget&label=NuGet)](https://www.nuget.org/packages/SriLankaHolidays)
+[![Crates.io Version](https://img.shields.io/crates/v/sri-lanka-holidays?logo=rust&label=crates.io)](https://crates.io/crates/sri-lanka-holidays)
+[![Go Reference](https://pkg.go.dev/badge/github.com/sahanRanasingha/sri-lanka-holidays/packages/go.svg)](https://pkg.go.dev/github.com/sahanRanasingha/sri-lanka-holidays/packages/go)
+[![PyPI Version](https://img.shields.io/pypi/v/sri-lanka-holidays?logo=pypi&label=PyPI)](https://pypi.org/project/sri-lanka-holidays/)
+[![Pub Version](https://img.shields.io/pub/v/sri_lanka_holidays?logo=dart&label=pub.dev)](https://pub.dev/packages/sri_lanka_holidays)
 [![Buy Me A Coffee](https://img.shields.io/badge/Buy%20Me%20a%20Coffee-ffdd00?style=flat&logo=buy-me-a-coffee&logoColor=black)](https://buymeacoffee.com/rsahan)
 
-A lightweight, zero-dependency npm package providing official **Sri Lanka Public, Bank, and Mercantile Holidays** (including **Full Moon Poya Days**) for **2026** and **2027**, powered by clean JSON datasets for effortless future updates.
+A lightweight, zero-dependency multi-language library ecosystem providing official **Sri Lanka Public, Bank, and Mercantile Holidays** (including **Full Moon Poya Days**) for **2026** and **2027** across **Node.js / TypeScript**, **PHP & Laravel**, **.NET / C#**, **Rust**, **Go**, **Python**, and **Flutter / Dart**, powered by clean JSON datasets for effortless future updates.
 
 ---
 
@@ -49,15 +53,15 @@ In Sri Lanka, official holidays are declared under the **Holidays Act, No. 29 of
 
 All libraries in this repository share the same canonical JSON dataset (`data/2026.json`, `data/2027.json`) via `npm run sync`:
 
-| Ecosystem / Framework | Directory | Package / Module |
-| :--- | :--- | :--- |
-| **Node.js / TypeScript** | [`packages/npm`](./packages/npm) | `npm install sri-lanka-holidays` |
-| **PHP & Laravel** | [`packages/laravel`](./packages/laravel) | `composer require sahanranasingha/sri-lanka-holidays` |
-| **.NET / C#** | [`packages/dotnet`](./packages/dotnet) | `dotnet add package SriLankaHolidays` |
-| **Rust** | [`packages/rust`](./packages/rust) | `cargo add sri-lanka-holidays` |
-| **Go** | [`packages/go`](./packages/go) | `go get github.com/sahanRanasingha/sri-lanka-holidays/packages/go` |
-| **Python (Django/FastAPI)** | [`packages/python`](./packages/python) | `pip install sri-lanka-holidays` |
-| **Flutter / Dart** | [`packages/dart`](./packages/dart) | `flutter pub add sri_lanka_holidays` |
+| Ecosystem / Framework | Registry Link | Install Command | Source Directory |
+| :--- | :--- | :--- | :--- |
+| **Node.js / TypeScript** | [npmjs.com/package/sri-lanka-holidays](https://www.npmjs.com/package/sri-lanka-holidays) | `npm install sri-lanka-holidays` | [`packages/npm`](./packages/npm) |
+| **PHP & Laravel** | [packagist.org/packages/sahanranasingha/sri-lanka-holidays](https://packagist.org/packages/sahanranasingha/sri-lanka-holidays) | `composer require sahanranasingha/sri-lanka-holidays` | [`packages/laravel`](./packages/laravel) |
+| **.NET / C#** | [nuget.org/packages/SriLankaHolidays](https://www.nuget.org/packages/SriLankaHolidays) | `dotnet add package SriLankaHolidays` | [`packages/dotnet`](./packages/dotnet) |
+| **Rust** | [crates.io/crates/sri-lanka-holidays](https://crates.io/crates/sri-lanka-holidays) | `cargo add sri-lanka-holidays` | [`packages/rust`](./packages/rust) |
+| **Go** | [pkg.go.dev/.../sri-lanka-holidays/packages/go](https://pkg.go.dev/github.com/sahanRanasingha/sri-lanka-holidays/packages/go) | `go get github.com/sahanRanasingha/sri-lanka-holidays/packages/go` | [`packages/go`](./packages/go) |
+| **Python (Django/FastAPI)** | [pypi.org/project/sri-lanka-holidays](https://pypi.org/project/sri-lanka-holidays/) | `pip install sri-lanka-holidays` | [`packages/python`](./packages/python) |
+| **Flutter / Dart** | [pub.dev/packages/sri_lanka_holidays](https://pub.dev/packages/sri_lanka_holidays) | `flutter pub add sri_lanka_holidays` | [`packages/dart`](./packages/dart) |
 
 ---
 
@@ -74,36 +78,71 @@ All libraries in this repository share the same canonical JSON dataset (`data/20
 
 ## 📦 Installation
 
+### 1. Node.js / TypeScript ([npm](https://www.npmjs.com/package/sri-lanka-holidays))
+
 ```bash
 npm install sri-lanka-holidays
-```
-
-Or using Yarn / pnpm:
-
-```bash
+# or
 yarn add sri-lanka-holidays
 # or
 pnpm add sri-lanka-holidays
+```
+
+### 2. PHP & Laravel ([Packagist](https://packagist.org/packages/sahanranasingha/sri-lanka-holidays))
+
+```bash
+composer require sahanranasingha/sri-lanka-holidays
+```
+
+### 3. .NET / C# ([NuGet](https://www.nuget.org/packages/SriLankaHolidays))
+
+```bash
+dotnet add package SriLankaHolidays
+```
+
+### 4. Rust ([Crates.io](https://crates.io/crates/sri-lanka-holidays))
+
+```bash
+cargo add sri-lanka-holidays
+```
+
+### 5. Go ([pkg.go.dev](https://pkg.go.dev/github.com/sahanRanasingha/sri-lanka-holidays/packages/go))
+
+```bash
+go get github.com/sahanRanasingha/sri-lanka-holidays/packages/go@latest
+```
+
+### 6. Python ([PyPI](https://pypi.org/project/sri-lanka-holidays/))
+
+```bash
+pip install sri-lanka-holidays
+# or
+uv add sri-lanka-holidays
+```
+
+### 7. Flutter / Dart ([pub.dev](https://pub.dev/packages/sri_lanka_holidays))
+
+```bash
+flutter pub add sri_lanka_holidays
+# or
+dart pub add sri_lanka_holidays
 ```
 
 ---
 
 ## 🚀 Quick Start
 
-### ES Modules (`import`)
+### Node.js / TypeScript (`import` / `require`)
 
 ```js
 import {
   HolidayType,
   getHolidays,
-  getHolidaysByYear,
   getHolidaysByMonth,
-  getHolidaysByType,
   getPublicHolidays,
   getBankHolidays,
   getMercantileHolidays,
   getPoyaDays,
-  getHolidayByDate,
   getUpcomingHolidays,
   isHoliday,
   isPublicHoliday,
@@ -128,38 +167,92 @@ const statutoryMercantile2027 = getHolidays({
   isPoya: false
 });
 
-// 4. Get holidays for a specific month (e.g., April 2026)
-const april2026 = getHolidaysByMonth(2026, 4);
-
-// 5. Check a specific date ('YYYY-MM-DD' or JS Date object)
-console.log(isHoliday('2026-04-03'));                  // true (Good Friday)
-console.log(isPublicHoliday('2026-04-03'));            // true
-console.log(isBankHoliday('2026-04-03'));              // true
-console.log(isMercantileHoliday('2026-04-03'));        // false (Good Friday is NOT Mercantile)
-
-// 6. Get upcoming holidays
-const nextThreeMercantile = getUpcomingHolidays('2026-11-05', {
-  limit: 3,
-  type: 'Mercantile'
-});
+// 4. Check a specific date ('YYYY-MM-DD' or JS Date object)
+console.log(isHoliday('2026-04-03'));           // true (Good Friday)
+console.log(isPublicHoliday('2026-04-03'));     // true
+console.log(isBankHoliday('2026-04-03'));       // true
+console.log(isMercantileHoliday('2026-04-03')); // false (Good Friday is NOT Mercantile)
 ```
 
-### CommonJS (`require`)
+### PHP & Laravel
 
-```js
-const slHolidays = require('sri-lanka-holidays');
+```php
+use SahanRanasingha\SriLankaHolidays\SriLankaHolidays;
+use SahanRanasingha\SriLankaHolidays\Facades\SriLankaHolidays as HolidaysFacade;
 
-console.log(slHolidays.getSupportedYears()); // [2026, 2027]
-console.log(slHolidays.getHolidayByDate('2027-02-04'));
+$holidays = new SriLankaHolidays();
+
+$all2026 = $holidays->getHolidays(2026);
+$mercantile2026 = $holidays->getMercantileHolidays(2026);
+$isMercantile = $holidays->isMercantileHoliday('2026-04-14'); // true
+
+// Or via Laravel Facade:
+$poyaDays = HolidaysFacade::getPoyaDays(2026);
 ```
 
-### Direct JSON Import
+### .NET / C#
 
-You can also import the raw JSON files directly if needed:
+```csharp
+using SriLankaHolidays;
 
-```js
-import holidays2026 from 'sri-lanka-holidays/data/2026.json' with { type: 'json' };
-import holidays2027 from 'sri-lanka-holidays/data/2027.json' with { type: 'json' };
+var holidays2026 = SriLankaHolidayCalendar.GetHolidays(year: 2026);
+var mercantile2026 = SriLankaHolidayCalendar.GetMercantileHolidays(2026);
+bool isGoodFridayMercantile = SriLankaHolidayCalendar.IsMercantileHoliday("2026-04-03"); // false
+bool isNewYearMercantile = SriLankaHolidayCalendar.IsMercantileHoliday(new DateOnly(2026, 4, 14)); // true
+```
+
+### Rust
+
+```rust
+use sri_lanka_holidays::{get_holidays, get_mercantile_holidays, is_mercantile_holiday, is_poya_day};
+
+let holidays_2026 = get_holidays(Some(2026));
+let mercantile_2026 = get_mercantile_holidays(Some(2026));
+assert!(!is_mercantile_holiday("2026-04-03")); // Good Friday
+assert!(is_poya_day("2026-01-03"));            // Duruthu Full Moon Poya Day
+```
+
+### Go
+
+```go
+package main
+
+import (
+    "fmt"
+    slholidays "github.com/sahanRanasingha/sri-lanka-holidays/packages/go"
+)
+
+func main() {
+    holidays2026 := slholidays.ByYear(2026)
+    fmt.Println(len(holidays2026))                          // 26
+    fmt.Println(slholidays.IsMercantileHoliday("2026-04-14")) // true
+}
+```
+
+### Python
+
+```python
+from datetime import date
+from sri_lanka_holidays import get_holidays, get_mercantile_holidays, is_mercantile_holiday, is_poya_day
+
+holidays_2026 = get_holidays(2026)
+mercantile_2026 = get_mercantile_holidays(2026)
+print(is_mercantile_holiday(date(2026, 4, 14)))  # True
+print(is_poya_day("2026-01-03"))                 # True
+```
+
+### Flutter / Dart
+
+```dart
+import 'package:sri_lanka_holidays/sri_lanka_holidays.dart';
+
+void main() {
+  final holidays2026 = SriLankaHolidays.getHolidays(year: 2026);
+  final poyaDays2026 = SriLankaHolidays.getPoyaDays(2026);
+
+  // DateTime extension methods included:
+  print(DateTime(2026, 4, 14).isSriLankaMercantileHoliday); // true
+}
 ```
 
 ---

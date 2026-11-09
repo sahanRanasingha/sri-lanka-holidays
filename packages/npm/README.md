@@ -1,9 +1,13 @@
 # 🇱🇰 sri-lanka-holidays
 
 [![License: MIT](https://img.shields.io/badge/License-MIT-blue.svg)](./LICENSE)
-[![Node.js](https://img.shields.io/badge/node-%3E%3D16.0.0-brightgreen.svg)](https://nodejs.org)
-[![Zero Dependencies](https://img.shields.io/badge/dependencies-0-success.svg)](#)
-[![TypeScript](https://img.shields.io/badge/TypeScript-Ready-3178C6.svg)](./types/index.d.ts)
+[![npm version](https://img.shields.io/npm/v/sri-lanka-holidays?logo=npm&label=npm)](https://www.npmjs.com/package/sri-lanka-holidays)
+[![Packagist Version](https://img.shields.io/packagist/v/sahanranasingha/sri-lanka-holidays?logo=packagist&label=Packagist)](https://packagist.org/packages/sahanranasingha/sri-lanka-holidays)
+[![NuGet Version](https://img.shields.io/nuget/v/SriLankaHolidays?logo=nuget&label=NuGet)](https://www.nuget.org/packages/SriLankaHolidays)
+[![Crates.io Version](https://img.shields.io/crates/v/sri-lanka-holidays?logo=rust&label=crates.io)](https://crates.io/crates/sri-lanka-holidays)
+[![Go Reference](https://pkg.go.dev/badge/github.com/sahanRanasingha/sri-lanka-holidays/packages/go.svg)](https://pkg.go.dev/github.com/sahanRanasingha/sri-lanka-holidays/packages/go)
+[![PyPI Version](https://img.shields.io/pypi/v/sri-lanka-holidays?logo=pypi&label=PyPI)](https://pypi.org/project/sri-lanka-holidays/)
+[![Pub Version](https://img.shields.io/pub/v/sri_lanka_holidays?logo=dart&label=pub.dev)](https://pub.dev/packages/sri_lanka_holidays)
 [![Buy Me A Coffee](https://img.shields.io/badge/Buy%20Me%20a%20Coffee-ffdd00?style=flat&logo=buy-me-a-coffee&logoColor=black)](https://buymeacoffee.com/rsahan)
 
 A lightweight, zero-dependency npm package providing official **Sri Lanka Public, Bank, and Mercantile Holidays** (including **Full Moon Poya Days**) for **2026** and **2027**, powered by clean JSON datasets for effortless future updates.
@@ -49,15 +53,15 @@ In Sri Lanka, official holidays are declared under the **Holidays Act, No. 29 of
 
 All libraries in this repository share the same canonical JSON dataset (`data/2026.json`, `data/2027.json`) via `npm run sync`:
 
-| Ecosystem / Framework | Directory | Package / Module |
-| :--- | :--- | :--- |
-| **Node.js / TypeScript** | `./` *(root)* | `npm install sri-lanka-holidays` |
-| **PHP & Laravel** | [`packages/laravel`](./packages/laravel) | `composer require sahanranasingha/sri-lanka-holidays` |
-| **.NET / C#** | [`packages/dotnet`](./packages/dotnet) | `dotnet add package SriLankaHolidays` |
-| **Rust** | [`packages/rust`](./packages/rust) | `cargo add sri-lanka-holidays` |
-| **Go** | [`packages/go`](./packages/go) | `go get github.com/sahanRanasingha/sri-lanka-holidays/packages/go` |
-| **Python (Django/FastAPI)** | [`packages/python`](./packages/python) | `pip install sri-lanka-holidays` |
-| **Flutter / Dart** | [`packages/dart`](./packages/dart) | `flutter pub add sri_lanka_holidays` |
+| Ecosystem / Framework | Registry Link | Install Command | Source Directory |
+| :--- | :--- | :--- | :--- |
+| **Node.js / TypeScript** | [npmjs.com/package/sri-lanka-holidays](https://www.npmjs.com/package/sri-lanka-holidays) | `npm install sri-lanka-holidays` | [`packages/npm`](https://github.com/sahanRanasingha/sri-lanka-holidays/tree/main/packages/npm) |
+| **PHP & Laravel** | [packagist.org/packages/sahanranasingha/sri-lanka-holidays](https://packagist.org/packages/sahanranasingha/sri-lanka-holidays) | `composer require sahanranasingha/sri-lanka-holidays` | [`packages/laravel`](https://github.com/sahanRanasingha/sri-lanka-holidays/tree/main/packages/laravel) |
+| **.NET / C#** | [nuget.org/packages/SriLankaHolidays](https://www.nuget.org/packages/SriLankaHolidays) | `dotnet add package SriLankaHolidays` | [`packages/dotnet`](https://github.com/sahanRanasingha/sri-lanka-holidays/tree/main/packages/dotnet) |
+| **Rust** | [crates.io/crates/sri-lanka-holidays](https://crates.io/crates/sri-lanka-holidays) | `cargo add sri-lanka-holidays` | [`packages/rust`](https://github.com/sahanRanasingha/sri-lanka-holidays/tree/main/packages/rust) |
+| **Go** | [pkg.go.dev/.../sri-lanka-holidays/packages/go](https://pkg.go.dev/github.com/sahanRanasingha/sri-lanka-holidays/packages/go) | `go get github.com/sahanRanasingha/sri-lanka-holidays/packages/go` | [`packages/go`](https://github.com/sahanRanasingha/sri-lanka-holidays/tree/main/packages/go) |
+| **Python (Django/FastAPI)** | [pypi.org/project/sri-lanka-holidays](https://pypi.org/project/sri-lanka-holidays/) | `pip install sri-lanka-holidays` | [`packages/python`](https://github.com/sahanRanasingha/sri-lanka-holidays/tree/main/packages/python) |
+| **Flutter / Dart** | [pub.dev/packages/sri_lanka_holidays](https://pub.dev/packages/sri_lanka_holidays) | `flutter pub add sri_lanka_holidays` | [`packages/dart`](https://github.com/sahanRanasingha/sri-lanka-holidays/tree/main/packages/dart) |
 
 ---
 
