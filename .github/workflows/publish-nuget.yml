@@ -3,6 +3,9 @@ name: Publish .NET Package to NuGet
 on:
   release:
     types: [published]
+  push:
+    tags:
+      - 'v*'
   workflow_dispatch:
 
 permissions:

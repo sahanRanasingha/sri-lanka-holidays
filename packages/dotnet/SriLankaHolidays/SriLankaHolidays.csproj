@@ -6,20 +6,21 @@
     <Nullable>enable</Nullable>
     <LangVersion>latest</LangVersion>
     <PackageId>SriLankaHolidays</PackageId>
-    <Version>1.0.2</Version>
+    <Version>1.1.2</Version>
     <Authors>Sahan Ranasingha</Authors>
     <Description>Official Sri Lanka Public, Bank, and Mercantile holidays (including Full Moon Poya days) for 2026, 2027, and extensible JSON support for .NET.</Description>
     <PackageTags>sri-lanka;holidays;public-holidays;bank-holidays;mercantile-holidays;poya;calendar</PackageTags>
     <PackageProjectUrl>https://github.com/sahanRanasingha/sri-lanka-holidays</PackageProjectUrl>
     <RepositoryUrl>https://github.com/sahanRanasingha/sri-lanka-holidays.git</RepositoryUrl>
     <PackageLicenseExpression>MIT</PackageLicenseExpression>
+    <PackageReadmeFile>README.md</PackageReadmeFile>
     <GenerateDocumentationFile>true</GenerateDocumentationFile>
     <NoWarn>$(NoWarn);1591</NoWarn>
   </PropertyGroup>
 
   <ItemGroup>
     <EmbeddedResource Include="Data\holidays.json" />
+    <None Include="..\README.md" Pack="true" PackagePath="\" />
   </ItemGroup>
 
 </Project>
-
