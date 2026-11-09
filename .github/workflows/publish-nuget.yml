@@ -5,6 +5,10 @@ on:
     types: [published]
   workflow_dispatch:
 
+permissions:
+  id-token: write
+  contents: read
+
 jobs:
   publish-nuget:
     name: Pack & Push to NuGet.org
@@ -19,6 +23,12 @@ jobs:
       - name: Pack NuGet package
         run: dotnet pack packages/dotnet/SriLankaHolidays/SriLankaHolidays.csproj -c Release -o ./nupkg
 
-      - name: Push to NuGet.org
-        run: dotnet nuget push ./nupkg/*.nupkg --api-key ${{ secrets.NUGET_API_KEY }} --source https://api.nuget.org/v3/index.json --skip-duplicate
+      - name: NuGet Login (OIDC Trusted Publishing)
+        uses: NuGet/login@v1
+        id: login
+        with:
+          user: sahanranasingha
+        continue-on-error: true
 
+      - name: Push to NuGet.org
+        run: dotnet nuget push ./nupkg/*.nupkg --api-key ${{ steps.login.outputs.NUGET_API_KEY || secrets.NUGET_API_KEY }} --source https://api.nuget.org/v3/index.json --skip-duplicate
