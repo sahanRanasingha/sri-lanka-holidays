@@ -1,6 +1,6 @@
 {
   "name": "sri-lanka-holidays",
-  "version": "1.1.0",
+  "version": "1.1.1",
   "description": "Official Sri Lanka Public, Bank, and Mercantile holidays (including Full Moon Poya days) for 2026, 2027, and extensible JSON support for future years.",
   "main": "./src/index.js",
   "module": "./esm/index.mjs",
