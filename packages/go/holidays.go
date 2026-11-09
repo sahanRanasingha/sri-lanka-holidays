@@ -64,7 +64,7 @@ func init() {
 		name := entry.Name()
 		if len(name) == 9 && strings.HasSuffix(name, ".json") {
 			year, err := strconv.Atoi(name[:4])
-			if err == nil {
+			if err == nil && year >= 1900 && year <= 3000 {
 				bytes, readErr := embeddedData.ReadFile(filepath.ToSlash(filepath.Join("data", name)))
 				if readErr == nil {
 					_ = AddHolidaysFromJSON(year, bytes)
@@ -87,63 +87,134 @@ func ParseHolidayType(input string) (HolidayType, error) {
 	}
 }
 
+func validateAndBuildHoliday(year int, raw rawHoliday) (Holiday, error) {
+	dateStr := strings.TrimSpace(raw.Date)
+	parsedTime, err := time.Parse("2006-01-02", dateStr)
+	if err != nil {
+		return Holiday{}, fmt.Errorf("invalid date %q: %w", raw.Date, err)
+	}
+	if parsedTime.Year() < 1900 || parsedTime.Year() > 3000 {
+		return Holiday{}, fmt.Errorf("invalid year %d in %q: expected between 1900 and 3000", parsedTime.Year(), dateStr)
+	}
+	if parsedTime.Year() != year {
+		return Holiday{}, fmt.Errorf("holiday %q (%s) does not match year %d", raw.Name, dateStr, year)
+	}
+
+	name := strings.TrimSpace(raw.Name)
+	if name == "" {
+		return Holiday{}, fmt.Errorf("holiday on %q must have a non-empty name", dateStr)
+	}
+	if len(raw.Types) == 0 {
+		return Holiday{}, fmt.Errorf("holiday %q (%s) must have at least one holiday type", name, dateStr)
+	}
+
+	var types []HolidayType
+	seenTypes := make(map[HolidayType]bool)
+	var isPublic, isBank, isMercantile bool
+	for _, t := range raw.Types {
+		ht, err := ParseHolidayType(t)
+		if err != nil {
+			return Holiday{}, err
+		}
+		if !seenTypes[ht] {
+			seenTypes[ht] = true
+			types = append(types, ht)
+		}
+		switch ht {
+		case Public:
+			isPublic = true
+		case Bank:
+			isBank = true
+		case Mercantile:
+			isMercantile = true
+		}
+	}
+
+	expectedDay := parsedTime.Weekday().String()
+	day := strings.TrimSpace(raw.Day)
+	if day != "" && day != expectedDay {
+		return Holiday{}, fmt.Errorf("holiday %q (%s) has invalid day %q: expected %q", name, dateStr, day, expectedDay)
+	}
+
+	isPoya := strings.Contains(strings.ToLower(name), "poya")
+	if raw.IsPoya != nil {
+		isPoya = *raw.IsPoya
+	}
+
+	return Holiday{
+		Date:         dateStr,
+		Day:          expectedDay,
+		Name:         name,
+		Types:        types,
+		IsPublic:     isPublic,
+		IsBank:       isBank,
+		IsMercantile: isMercantile,
+		IsPoya:       isPoya,
+	}, nil
+}
+
 func AddHolidaysFromJSON(year int, jsonBytes []byte) error {
+	if year < 1900 || year > 3000 {
+		return fmt.Errorf("invalid year %d: expected a 4-digit year between 1900 and 3000", year)
+	}
+
 	var rawList []rawHoliday
 	if err := json.Unmarshal(jsonBytes, &rawList); err != nil {
 		return err
 	}
 
-	normalized := make([]Holiday, 0, len(rawList))
+	dedup := make(map[string]Holiday, len(rawList))
 	for _, raw := range rawList {
-		dateStr := strings.TrimSpace(raw.Date)
-		parsedTime, err := time.Parse("2006-01-02", dateStr)
+		h, err := validateAndBuildHoliday(year, raw)
 		if err != nil {
-			return fmt.Errorf("invalid date %q: %w", raw.Date, err)
+			return err
 		}
-		if parsedTime.Year() != year {
-			return fmt.Errorf("holiday %q (%s) does not match year %d", raw.Name, dateStr, year)
-		}
-
-		var types []HolidayType
-		var isPublic, isBank, isMercantile bool
-		for _, t := range raw.Types {
-			ht, err := ParseHolidayType(t)
-			if err != nil {
-				return err
-			}
-			types = append(types, ht)
-			switch ht {
-			case Public:
-				isPublic = true
-			case Bank:
-				isBank = true
-			case Mercantile:
-				isMercantile = true
-			}
-		}
-
-		day := strings.TrimSpace(raw.Day)
-		if day == "" {
-			day = parsedTime.Weekday().String()
-		}
-
-		isPoya := strings.Contains(strings.ToLower(raw.Name), "poya")
-		if raw.IsPoya != nil {
-			isPoya = *raw.IsPoya
-		}
-
-		normalized = append(normalized, Holiday{
-			Date:         dateStr,
-			Day:          day,
-			Name:         strings.TrimSpace(raw.Name),
-			Types:        types,
-			IsPublic:     isPublic,
-			IsBank:       isBank,
-			IsMercantile: isMercantile,
-			IsPoya:       isPoya,
-		})
+		dedup[h.Date+"\x00"+h.Name] = h
 	}
 
+	normalized := make([]Holiday, 0, len(dedup))
+	for _, h := range dedup {
+		normalized = append(normalized, h)
+	}
+	sort.Slice(normalized, func(i, j int) bool {
+		return normalized[i].Date < normalized[j].Date
+	})
+
+	mu.Lock()
+	store[year] = normalized
+	mu.Unlock()
+	return nil
+}
+
+func AddHolidaysForYear(year int, holidays []Holiday) error {
+	if year < 1900 || year > 3000 {
+		return fmt.Errorf("invalid year %d: expected a 4-digit year between 1900 and 3000", year)
+	}
+
+	dedup := make(map[string]Holiday, len(holidays))
+	for _, item := range holidays {
+		rawTypes := make([]string, len(item.Types))
+		for i, t := range item.Types {
+			rawTypes[i] = string(t)
+		}
+		isPoya := item.IsPoya
+		h, err := validateAndBuildHoliday(year, rawHoliday{
+			Date:   item.Date,
+			Day:    item.Day,
+			Name:   item.Name,
+			Types:  rawTypes,
+			IsPoya: &isPoya,
+		})
+		if err != nil {
+			return err
+		}
+		dedup[h.Date+"\x00"+h.Name] = h
+	}
+
+	normalized := make([]Holiday, 0, len(dedup))
+	for _, h := range dedup {
+		normalized = append(normalized, h)
+	}
 	sort.Slice(normalized, func(i, j int) bool {
 		return normalized[i].Date < normalized[j].Date
 	})
@@ -185,7 +256,10 @@ func Filter(opts FilterOptions) []Holiday {
 
 	var result []Holiday
 	monthPrefix := ""
-	if opts.Month >= time.January && opts.Month <= time.December {
+	if opts.Month != 0 {
+		if opts.Month < time.January || opts.Month > time.December {
+			return result
+		}
 		monthPrefix = fmt.Sprintf("-%02d-", int(opts.Month))
 	}
 
@@ -208,7 +282,9 @@ func Filter(opts FilterOptions) []Holiday {
 		if opts.IsPoya != nil && h.IsPoya != *opts.IsPoya {
 			continue
 		}
-		result = append(result, h)
+		copyH := h
+		copyH.Types = append([]HolidayType(nil), h.Types...)
+		result = append(result, copyH)
 	}
 	return result
 }
@@ -242,49 +318,74 @@ func PoyaDays(year int) []Holiday {
 	return Filter(FilterOptions{Year: year, IsPoya: &isPoya})
 }
 
-func ByDate(dateStr string) (*Holiday, bool) {
+func matchesForDate(dateStr string) []Holiday {
 	trimmed := strings.TrimSpace(dateStr)
-	if len(trimmed) != 10 {
-		return nil, false
-	}
-	year, err := strconv.Atoi(trimmed[:4])
-	if err != nil {
-		return nil, false
+	parsedTime, err := time.Parse("2006-01-02", trimmed)
+	if err != nil || parsedTime.Year() < 1000 || parsedTime.Year() > 9999 {
+		return nil
 	}
 
 	mu.RLock()
 	defer mu.RUnlock()
-	for _, h := range store[year] {
+	var matches []Holiday
+	for _, h := range store[parsedTime.Year()] {
 		if h.Date == trimmed {
 			copyH := h
-			return &copyH, true
+			copyH.Types = append([]HolidayType(nil), h.Types...)
+			matches = append(matches, copyH)
 		}
 	}
-	return nil, false
+	return matches
+}
+
+func HolidaysByDate(dateStr string) []Holiday {
+	return matchesForDate(dateStr)
+}
+
+func ByDate(dateStr string) (*Holiday, bool) {
+	matches := matchesForDate(dateStr)
+	if len(matches) == 0 {
+		return nil, false
+	}
+	return &matches[0], true
 }
 
 func IsHoliday(dateStr string) bool {
-	_, ok := ByDate(dateStr)
-	return ok
+	return len(matchesForDate(dateStr)) > 0
 }
 
 func IsPublicHoliday(dateStr string) bool {
-	h, ok := ByDate(dateStr)
-	return ok && h.IsPublic
+	for _, h := range matchesForDate(dateStr) {
+		if h.IsPublic {
+			return true
+		}
+	}
+	return false
 }
 
 func IsBankHoliday(dateStr string) bool {
-	h, ok := ByDate(dateStr)
-	return ok && h.IsBank
+	for _, h := range matchesForDate(dateStr) {
+		if h.IsBank {
+			return true
+		}
+	}
+	return false
 }
 
 func IsMercantileHoliday(dateStr string) bool {
-	h, ok := ByDate(dateStr)
-	return ok && h.IsMercantile
+	for _, h := range matchesForDate(dateStr) {
+		if h.IsMercantile {
+			return true
+		}
+	}
+	return false
 }
 
 func IsPoyaDay(dateStr string) bool {
-	h, ok := ByDate(dateStr)
-	return ok && h.IsPoya
+	for _, h := range matchesForDate(dateStr) {
+		if h.IsPoya {
+			return true
+		}
+	}
+	return false
 }
-

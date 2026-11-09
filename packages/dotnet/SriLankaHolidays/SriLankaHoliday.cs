@@ -47,6 +47,11 @@ public sealed record SriLankaHoliday(
             throw new ArgumentException($"Invalid date '{raw.Date}'. Expected 'yyyy-MM-dd'.");
         }
 
+        if (parsedDate.Year < 1000 || parsedDate.Year > 9999)
+        {
+            throw new ArgumentOutOfRangeException(nameof(raw), $"Invalid year {parsedDate.Year}. Expected a 4-digit year.");
+        }
+
         var name = raw.Name?.Trim() ?? string.Empty;
         if (string.IsNullOrEmpty(name))
         {
@@ -61,17 +66,20 @@ public sealed record SriLankaHoliday(
         var normalizedTypes = raw.Types
             .Select(t => HolidayTypeParser.Parse(t).ToString())
             .Distinct(StringComparer.Ordinal)
-            .ToList();
+            .ToList()
+            .AsReadOnly();
 
-        var day = !string.IsNullOrWhiteSpace(raw.Day)
-            ? raw.Day!.Trim()
-            : parsedDate.DayOfWeek.ToString();
+        var expectedDay = parsedDate.DayOfWeek.ToString();
+        if (raw.Day is not null && !string.Equals(raw.Day.Trim(), expectedDay, StringComparison.Ordinal))
+        {
+            throw new ArgumentException($"Holiday '{name}' ({dateStr}) has invalid day '{raw.Day}'. Expected '{expectedDay}'.");
+        }
 
         var isPoya = raw.IsPoya ?? name.Contains("Poya", StringComparison.OrdinalIgnoreCase);
 
         return new SriLankaHoliday(
             Date: dateStr,
-            Day: day,
+            Day: expectedDay,
             Name: name,
             Types: normalizedTypes,
             IsPublic: normalizedTypes.Contains(nameof(HolidayType.Public)),
@@ -81,4 +89,3 @@ public sealed record SriLankaHoliday(
         );
     }
 }
-

@@ -37,7 +37,7 @@ final class Holiday implements JsonSerializable
      */
     public static function fromArray(array $raw): self
     {
-        $date = isset($raw['date']) ? trim((string) $raw['date']) : '';
+        $date = isset($raw['date']) && is_string($raw['date']) ? trim($raw['date']) : '';
         if (!preg_match('/^\d{4}-(0[1-9]|1[0-2])-(0[1-9]|[12]\d|3[01])$/', $date)) {
             throw new InvalidArgumentException(sprintf('Invalid holiday date "%s". Expected YYYY-MM-DD.', $date));
         }
@@ -47,7 +47,12 @@ final class Holiday implements JsonSerializable
             throw new InvalidArgumentException(sprintf('Invalid calendar date "%s".', $date));
         }
 
-        $name = isset($raw['name']) ? trim((string) $raw['name']) : '';
+        $year = (int) $dt->format('Y');
+        if ($year < 1000 || $year > 9999) {
+            throw new InvalidArgumentException(sprintf('Invalid year "%d" in date "%s".', $year, $date));
+        }
+
+        $name = isset($raw['name']) && is_string($raw['name']) ? trim($raw['name']) : '';
         if ($name === '') {
             throw new InvalidArgumentException(sprintf('Holiday on "%s" must have a non-empty name.', $date));
         }
@@ -58,15 +63,35 @@ final class Holiday implements JsonSerializable
 
         $normalizedTypes = [];
         foreach ($raw['types'] as $t) {
+            if (!is_string($t) && !($t instanceof HolidayType)) {
+                throw new InvalidArgumentException(sprintf('Invalid holiday type in "%s" (%s).', $name, $date));
+            }
             $typeValue = HolidayType::fromInput($t)->value;
             if (!in_array($typeValue, $normalizedTypes, true)) {
                 $normalizedTypes[] = $typeValue;
             }
         }
 
-        $day = isset($raw['day']) && is_string($raw['day']) && trim($raw['day']) !== ''
-            ? trim($raw['day'])
-            : $dt->format('l');
+        $expectedDay = $dt->format('l');
+        if (array_key_exists('day', $raw) && $raw['day'] !== null) {
+            if (!is_string($raw['day']) || trim($raw['day']) !== $expectedDay) {
+                throw new InvalidArgumentException(sprintf(
+                    'Holiday "%s" (%s) has invalid day "%s". Expected "%s".',
+                    $name,
+                    $date,
+                    is_scalar($raw['day']) ? (string) $raw['day'] : gettype($raw['day']),
+                    $expectedDay
+                ));
+            }
+        }
+
+        if (array_key_exists('isPoya', $raw) && $raw['isPoya'] !== null && !is_bool($raw['isPoya'])) {
+            throw new InvalidArgumentException(sprintf(
+                'Holiday "%s" (%s) "isPoya" property must be a boolean when provided.',
+                $name,
+                $date
+            ));
+        }
 
         $isPoya = isset($raw['isPoya']) && is_bool($raw['isPoya'])
             ? $raw['isPoya']
@@ -74,7 +99,7 @@ final class Holiday implements JsonSerializable
 
         return new self(
             date: $date,
-            day: $day,
+            day: $expectedDay,
             name: $name,
             types: $normalizedTypes,
             isPublic: in_array(HolidayType::PUBLIC->value, $normalizedTypes, true),
@@ -109,4 +134,3 @@ final class Holiday implements JsonSerializable
         return $this->toArray();
     }
 }
-

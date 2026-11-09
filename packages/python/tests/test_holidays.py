@@ -42,18 +42,53 @@ def run_tests() -> None:
     statutory_2027 = get_holidays(2027, holiday_type=HolidayType.MERCANTILE, is_poya=False)
     assert len(statutory_2027) == 8
 
-    # Extensibility
+    # Extensibility, deduplication & coinciding holidays
     add_holidays_for_year(
         2028,
         [
             {
-                "date": "2028-01-15",
-                "name": "Tamil Thai Pongal Day",
+                "date": "2028-05-01",
+                "name": "May Day",
                 "types": ["Public", "Bank", "Mercantile"],
-            }
+                "isPoya": False,
+            },
+            {
+                "date": "2028-05-01",
+                "name": "May Day",
+                "types": ["Public", "Bank", "Mercantile"],
+                "isPoya": False,
+            },
+            {
+                "date": "2028-05-01",
+                "name": "Vesak Full Moon Poya Day",
+                "types": ["Public", "Bank"],
+                "isPoya": True,
+            },
         ],
     )
-    assert is_mercantile_holiday("2028-01-15") is True
+    assert len(get_holidays(2028)) == 2
+    assert is_mercantile_holiday("2028-05-01") is True
+    assert is_poya_day("2028-05-01") is True
+
+    # Validation: spoofed day-of-week & invalid calendar dates
+    try:
+        add_holidays_for_year(
+            2029,
+            [{"date": "2029-01-15", "day": "Sunday", "name": "Spoofed", "types": ["Public"]}],
+        )
+        raise AssertionError("Should have rejected spoofed day of week")
+    except ValueError:
+        pass
+
+    try:
+        add_holidays_for_year(
+            2029,
+            [{"date": "2029-02-29", "name": "Invalid Leap Day", "types": ["Public"]}],
+        )
+        raise AssertionError("Should have rejected non-leap year 2029-02-29")
+    except ValueError:
+        pass
+
     print("Python package tests passed!")
 
 

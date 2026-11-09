@@ -32,7 +32,8 @@ public static class SriLankaHolidayCalendar
             return;
         }
 
-        var map = JsonSerializer.Deserialize<Dictionary<string, List<RawHolidayDto>>>(stream);
+        var options = new JsonSerializerOptions { MaxDepth = 16 };
+        var map = JsonSerializer.Deserialize<Dictionary<string, List<RawHolidayDto>>>(stream, options);
         if (map is null)
         {
             return;
@@ -40,7 +41,7 @@ public static class SriLankaHolidayCalendar
 
         foreach (var (yearKey, list) in map)
         {
-            if (int.TryParse(yearKey, out var year))
+            if (int.TryParse(yearKey, out var year) && year >= 1900 && year <= 3000)
             {
                 AddHolidaysForYear(year, list);
             }
@@ -54,21 +55,26 @@ public static class SriLankaHolidayCalendar
     {
         if (year < 1900 || year > 3000)
         {
-            throw new ArgumentOutOfRangeException(nameof(year), "Expected a 4-digit year.");
+            throw new ArgumentOutOfRangeException(nameof(year), "Expected a 4-digit year between 1900 and 3000.");
         }
 
-        var normalized = holidays
-            .Select(SriLankaHoliday.FromRaw)
-            .OrderBy(h => h.Date, StringComparer.Ordinal)
-            .ToList();
+        ArgumentNullException.ThrowIfNull(holidays);
 
-        foreach (var item in normalized)
+        var dedup = new Dictionary<string, SriLankaHoliday>(StringComparer.Ordinal);
+        foreach (var raw in holidays)
         {
-            if (!item.Date.StartsWith($"{year}-", StringComparison.Ordinal))
+            var record = SriLankaHoliday.FromRaw(raw);
+            if (!record.Date.StartsWith($"{year}-", StringComparison.Ordinal))
             {
-                throw new ArgumentException($"Holiday '{item.Name}' ({item.Date}) does not match year {year}.");
+                throw new ArgumentException($"Holiday '{record.Name}' ({record.Date}) does not match year {year}.");
             }
+            dedup[$"{record.Date}\0{record.Name}"] = record;
         }
+
+        var normalized = dedup.Values
+            .OrderBy(h => h.Date, StringComparer.Ordinal)
+            .ToList()
+            .AsReadOnly();
 
         Store[year] = normalized;
         return normalized;
@@ -76,7 +82,8 @@ public static class SriLankaHolidayCalendar
 
     public static IReadOnlyList<SriLankaHoliday> AddHolidaysFromJson(int year, string jsonArray)
     {
-        var list = JsonSerializer.Deserialize<List<RawHolidayDto>>(jsonArray)
+        var options = new JsonSerializerOptions { MaxDepth = 16 };
+        var list = JsonSerializer.Deserialize<List<RawHolidayDto>>(jsonArray, options)
             ?? throw new ArgumentException("Invalid JSON array.", nameof(jsonArray));
         return AddHolidaysForYear(year, list);
     }
@@ -90,6 +97,10 @@ public static class SriLankaHolidayCalendar
         IEnumerable<SriLankaHoliday> source;
         if (year.HasValue)
         {
+            if (year.Value < 1000 || year.Value > 9999)
+            {
+                throw new ArgumentOutOfRangeException(nameof(year), "Year must be between 1000 and 9999.");
+            }
             source = Store.TryGetValue(year.Value, out var list) ? list : [];
         }
         else
@@ -142,40 +153,66 @@ public static class SriLankaHolidayCalendar
     public static IReadOnlyList<SriLankaHoliday> GetPoyaDays(int? year = null) =>
         GetHolidays(year: year, isPoya: true);
 
-    public static SriLankaHoliday? GetHolidayByDate(string dateStr)
+    private static DateOnly ParseIsoDate(string dateStr)
     {
-        if (!DateOnly.TryParseExact(dateStr?.Trim(), "yyyy-MM-dd", CultureInfo.InvariantCulture, DateTimeStyles.None, out var date))
+        if (string.IsNullOrWhiteSpace(dateStr) ||
+            !DateOnly.TryParseExact(dateStr.Trim(), "yyyy-MM-dd", CultureInfo.InvariantCulture, DateTimeStyles.None, out var date))
         {
             throw new ArgumentException($"Invalid date '{dateStr}'. Expected 'yyyy-MM-dd'.", nameof(dateStr));
         }
-        return GetHolidayByDate(date);
+        return ValidateDateBounds(date);
     }
 
-    public static SriLankaHoliday? GetHolidayByDate(DateOnly date)
+    private static DateOnly ValidateDateBounds(DateOnly date)
     {
+        if (date.Year < 1000 || date.Year > 9999)
+        {
+            throw new ArgumentOutOfRangeException(nameof(date), $"Year {date.Year} is out of range. Expected a 4-digit year between 1000 and 9999.");
+        }
+        return date;
+    }
+
+    private static IReadOnlyList<SriLankaHoliday> GetHolidaysForDateInternal(DateOnly date)
+    {
+        ValidateDateBounds(date);
         if (!Store.TryGetValue(date.Year, out var list))
         {
-            return null;
+            return [];
         }
         var target = date.ToString("yyyy-MM-dd", CultureInfo.InvariantCulture);
-        return list.FirstOrDefault(h => h.Date == target);
+        return list.Where(h => h.Date == target).ToList();
     }
+
+    public static IReadOnlyList<SriLankaHoliday> GetHolidaysByDate(string dateStr) =>
+        GetHolidaysForDateInternal(ParseIsoDate(dateStr));
+
+    public static IReadOnlyList<SriLankaHoliday> GetHolidaysByDate(DateOnly date) =>
+        GetHolidaysForDateInternal(date);
+
+    public static IReadOnlyList<SriLankaHoliday> GetHolidaysByDate(DateTime dateTime) =>
+        GetHolidaysForDateInternal(DateOnly.FromDateTime(dateTime));
+
+    public static SriLankaHoliday? GetHolidayByDate(string dateStr) =>
+        GetHolidayByDate(ParseIsoDate(dateStr));
+
+    public static SriLankaHoliday? GetHolidayByDate(DateOnly date) =>
+        GetHolidaysForDateInternal(date).FirstOrDefault();
 
     public static SriLankaHoliday? GetHolidayByDate(DateTime dateTime) =>
         GetHolidayByDate(DateOnly.FromDateTime(dateTime));
 
-    public static bool IsHoliday(string dateStr, HolidayType? type = null)
+    public static bool IsHoliday(string dateStr, HolidayType? type = null) =>
+        IsHoliday(ParseIsoDate(dateStr), type);
+
+    public static bool IsHoliday(DateOnly date, HolidayType? type = null)
     {
-        var holiday = GetHolidayByDate(dateStr);
-        if (holiday is null)
+        var matches = GetHolidaysForDateInternal(date);
+        if (matches.Count == 0)
         {
             return false;
         }
-        return !type.HasValue || holiday.Types.Contains(type.Value.ToString());
+        return !type.HasValue || matches.Any(h => h.Types.Contains(type.Value.ToString()));
     }
-
-    public static bool IsHoliday(DateOnly date, HolidayType? type = null) =>
-        IsHoliday(date.ToString("yyyy-MM-dd", CultureInfo.InvariantCulture), type);
 
     public static bool IsHoliday(DateTime dateTime, HolidayType? type = null) =>
         IsHoliday(DateOnly.FromDateTime(dateTime), type);
@@ -183,6 +220,6 @@ public static class SriLankaHolidayCalendar
     public static bool IsPublicHoliday(string dateStr) => IsHoliday(dateStr, HolidayType.Public);
     public static bool IsBankHoliday(string dateStr) => IsHoliday(dateStr, HolidayType.Bank);
     public static bool IsMercantileHoliday(string dateStr) => IsHoliday(dateStr, HolidayType.Mercantile);
-    public static bool IsPoyaDay(string dateStr) => GetHolidayByDate(dateStr)?.IsPoya == true;
+    public static bool IsPoyaDay(string dateStr) =>
+        GetHolidaysForDateInternal(ParseIsoDate(dateStr)).Any(h => h.IsPoya);
 }
-
