@@ -1,6 +1,6 @@
 name: sri_lanka_holidays
 description: Official Sri Lanka Public, Bank, and Mercantile holidays (including Full Moon Poya days) for 2026, 2027, and extensible JSON support for Dart and Flutter.
-version: 1.0.2
+version: 1.1.2
 homepage: https://github.com/sahanRanasingha/sri-lanka-holidays
 repository: https://github.com/sahanRanasingha/sri-lanka-holidays
 funding:
