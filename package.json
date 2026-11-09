@@ -1,59 +1,15 @@
 {
-  "name": "sri-lanka-holidays",
-  "version": "1.0.2",
-  "description": "Official Sri Lanka Public, Bank, and Mercantile holidays (including Full Moon Poya days) for 2026, 2027, and extensible JSON support for future years.",
-  "main": "./src/index.js",
-  "module": "./esm/index.mjs",
-  "types": "./types/index.d.ts",
-  "exports": {
-    ".": {
-      "types": "./types/index.d.ts",
-      "import": "./esm/index.mjs",
-      "require": "./src/index.js",
-      "default": "./src/index.js"
-    },
-    "./data/*": "./data/*"
-  },
-  "files": [
-    "src",
-    "esm",
-    "data",
-    "types",
-    "README.md",
-    "LICENSE"
-  ],
+  "name": "sri-lanka-holidays-monorepo",
+  "private": true,
+  "description": "Multi-language monorepo for Sri Lanka Holidays (npm, Laravel/PHP, .NET, Rust, Go, Python, Dart/Flutter).",
   "scripts": {
-    "test": "node --test test/index.test.js"
+    "sync": "node scripts/sync-data.js",
+    "test": "npm --prefix packages/npm test"
   },
-  "keywords": [
-    "sri-lanka",
-    "srilanka",
-    "holidays",
-    "public-holidays",
-    "bank-holidays",
-    "mercantile-holidays",
-    "poya-days",
-    "calendar",
-    "lk",
-    "2026",
-    "2027"
-  ],
   "repository": {
     "type": "git",
     "url": "git+https://github.com/sahanRanasingha/sri-lanka-holidays.git"
   },
-  "homepage": "https://github.com/sahanRanasingha/sri-lanka-holidays#readme",
-  "bugs": {
-    "url": "https://github.com/sahanRanasingha/sri-lanka-holidays/issues"
-  },
-  "funding": {
-    "type": "buymeacoffee",
-    "url": "https://buymeacoffee.com/rsahan"
-  },
   "author": "Sahan Ranasingha",
-  "license": "MIT",
-  "engines": {
-    "node": ">=16.0.0"
-  }
+  "license": "MIT"
 }
-

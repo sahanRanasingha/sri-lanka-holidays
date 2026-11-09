@@ -1,0 +1,272 @@
+[
+  {
+    "date": "2027-01-15",
+    "day": "Friday",
+    "name": "Tamil Thai Pongal Day",
+    "types": [
+      "Public",
+      "Bank",
+      "Mercantile"
+    ],
+    "isPoya": false
+  },
+  {
+    "date": "2027-01-22",
+    "day": "Friday",
+    "name": "Duruthu Full Moon Poya Day",
+    "types": [
+      "Public",
+      "Bank",
+      "Mercantile"
+    ],
+    "isPoya": true
+  },
+  {
+    "date": "2027-02-04",
+    "day": "Thursday",
+    "name": "Independence Day",
+    "types": [
+      "Public",
+      "Bank",
+      "Mercantile"
+    ],
+    "isPoya": false
+  },
+  {
+    "date": "2027-02-20",
+    "day": "Saturday",
+    "name": "Navam Full Moon Poya Day",
+    "types": [
+      "Public",
+      "Bank",
+      "Mercantile"
+    ],
+    "isPoya": true
+  },
+  {
+    "date": "2027-03-06",
+    "day": "Saturday",
+    "name": "Maha Sivarathri Day",
+    "types": [
+      "Public",
+      "Bank"
+    ],
+    "isPoya": false
+  },
+  {
+    "date": "2027-03-10",
+    "day": "Wednesday",
+    "name": "Id-Ul-Fitr (Ramazan Festival Day)",
+    "types": [
+      "Public",
+      "Bank"
+    ],
+    "isPoya": false
+  },
+  {
+    "date": "2027-03-22",
+    "day": "Monday",
+    "name": "Medin Full Moon Poya Day",
+    "types": [
+      "Public",
+      "Bank",
+      "Mercantile"
+    ],
+    "isPoya": true
+  },
+  {
+    "date": "2027-03-26",
+    "day": "Friday",
+    "name": "Good Friday",
+    "types": [
+      "Public",
+      "Bank"
+    ],
+    "isPoya": false
+  },
+  {
+    "date": "2027-04-13",
+    "day": "Tuesday",
+    "name": "Day Prior to Sinhala & Tamil New Year Day",
+    "types": [
+      "Public",
+      "Bank",
+      "Mercantile"
+    ],
+    "isPoya": false
+  },
+  {
+    "date": "2027-04-14",
+    "day": "Wednesday",
+    "name": "Sinhala & Tamil New Year Day",
+    "types": [
+      "Public",
+      "Bank",
+      "Mercantile"
+    ],
+    "isPoya": false
+  },
+  {
+    "date": "2027-04-20",
+    "day": "Tuesday",
+    "name": "Bak Full Moon Poya Day",
+    "types": [
+      "Public",
+      "Bank",
+      "Mercantile"
+    ],
+    "isPoya": true
+  },
+  {
+    "date": "2027-05-01",
+    "day": "Saturday",
+    "name": "May Day (International Workers' Day)",
+    "types": [
+      "Public",
+      "Bank",
+      "Mercantile"
+    ],
+    "isPoya": false
+  },
+  {
+    "date": "2027-05-17",
+    "day": "Monday",
+    "name": "Id-Ul-Alha (Hadji Festival Day)",
+    "types": [
+      "Public",
+      "Bank"
+    ],
+    "isPoya": false
+  },
+  {
+    "date": "2027-05-19",
+    "day": "Wednesday",
+    "name": "Vesak Full Moon Poya Day",
+    "types": [
+      "Public",
+      "Bank",
+      "Mercantile"
+    ],
+    "isPoya": true
+  },
+  {
+    "date": "2027-05-20",
+    "day": "Thursday",
+    "name": "Day Following Vesak Full Moon Poya Day",
+    "types": [
+      "Public",
+      "Bank",
+      "Mercantile"
+    ],
+    "isPoya": false
+  },
+  {
+    "date": "2027-06-18",
+    "day": "Friday",
+    "name": "Poson Full Moon Poya Day",
+    "types": [
+      "Public",
+      "Bank",
+      "Mercantile"
+    ],
+    "isPoya": true
+  },
+  {
+    "date": "2027-07-18",
+    "day": "Sunday",
+    "name": "Esala Full Moon Poya Day",
+    "types": [
+      "Public",
+      "Bank",
+      "Mercantile"
+    ],
+    "isPoya": true
+  },
+  {
+    "date": "2027-08-15",
+    "day": "Sunday",
+    "name": "Milad-Un-Nabi (Holy Prophet's Birthday)",
+    "types": [
+      "Public",
+      "Bank",
+      "Mercantile"
+    ],
+    "isPoya": false
+  },
+  {
+    "date": "2027-08-16",
+    "day": "Monday",
+    "name": "Nikini Full Moon Poya Day",
+    "types": [
+      "Public",
+      "Bank",
+      "Mercantile"
+    ],
+    "isPoya": true
+  },
+  {
+    "date": "2027-09-15",
+    "day": "Wednesday",
+    "name": "Binara Full Moon Poya Day",
+    "types": [
+      "Public",
+      "Bank",
+      "Mercantile"
+    ],
+    "isPoya": true
+  },
+  {
+    "date": "2027-10-15",
+    "day": "Friday",
+    "name": "Vap Full Moon Poya Day",
+    "types": [
+      "Public",
+      "Bank",
+      "Mercantile"
+    ],
+    "isPoya": true
+  },
+  {
+    "date": "2027-10-28",
+    "day": "Thursday",
+    "name": "Deepavali Festival Day",
+    "types": [
+      "Public",
+      "Bank"
+    ],
+    "isPoya": false
+  },
+  {
+    "date": "2027-11-13",
+    "day": "Saturday",
+    "name": "Il Full Moon Poya Day",
+    "types": [
+      "Public",
+      "Bank",
+      "Mercantile"
+    ],
+    "isPoya": true
+  },
+  {
+    "date": "2027-12-13",
+    "day": "Monday",
+    "name": "Unduwap Full Moon Poya Day",
+    "types": [
+      "Public",
+      "Bank",
+      "Mercantile"
+    ],
+    "isPoya": true
+  },
+  {
+    "date": "2027-12-25",
+    "day": "Saturday",
+    "name": "Christmas Day",
+    "types": [
+      "Public",
+      "Bank",
+      "Mercantile"
+    ],
+    "isPoya": false
+  }
+]

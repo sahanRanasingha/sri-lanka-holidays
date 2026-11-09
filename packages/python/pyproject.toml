@@ -1,0 +1,43 @@
+[build-system]
+requires = ["setuptools>=61.0"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "sri-lanka-holidays"
+version = "1.0.2"
+description = "Official Sri Lanka Public, Bank, and Mercantile holidays (including Full Moon Poya days) for 2026, 2027, and extensible JSON support."
+readme = "README.md"
+license = { text = "MIT" }
+requires-python = ">=3.9"
+authors = [
+  { name = "Sahan Ranasingha" }
+]
+keywords = [
+  "sri-lanka",
+  "holidays",
+  "public-holidays",
+  "bank-holidays",
+  "mercantile-holidays",
+  "poya",
+  "django",
+  "fastapi"
+]
+classifiers = [
+  "Development Status :: 5 - Production/Stable",
+  "Intended Audience :: Developers",
+  "License :: OSI Approved :: MIT License",
+  "Programming Language :: Python :: 3",
+  "Topic :: Software Development :: Libraries :: Python Modules"
+]
+
+[project.urls]
+Homepage = "https://github.com/sahanRanasingha/sri-lanka-holidays"
+Repository = "https://github.com/sahanRanasingha/sri-lanka-holidays"
+Funding = "https://buymeacoffee.com/rsahan"
+
+[tool.setuptools.packages.find]
+include = ["sri_lanka_holidays*"]
+
+[tool.setuptools.package-data]
+sri_lanka_holidays = ["data/*.json"]
+

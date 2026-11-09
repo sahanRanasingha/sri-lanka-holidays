@@ -1,0 +1,50 @@
+{
+  "name": "sahanranasingha/sri-lanka-holidays",
+  "description": "Official Sri Lanka Public, Bank, and Mercantile holidays (including Full Moon Poya days) for PHP and Laravel.",
+  "type": "library",
+  "license": "MIT",
+  "keywords": [
+    "sri-lanka",
+    "holidays",
+    "laravel",
+    "php",
+    "public-holidays",
+    "bank-holidays",
+    "mercantile-holidays",
+    "poya-days",
+    "carbon"
+  ],
+  "authors": [
+    {
+      "name": "Sahan Ranasingha",
+      "homepage": "https://github.com/sahanRanasingha"
+    }
+  ],
+  "funding": [
+    {
+      "type": "buymeacoffee",
+      "url": "https://buymeacoffee.com/rsahan"
+    }
+  ],
+  "require": {
+    "php": "^8.1"
+  },
+  "autoload": {
+    "psr-4": {
+      "SahanRanasingha\\SriLankaHolidays\\": "src/"
+    }
+  },
+  "extra": {
+    "laravel": {
+      "providers": [
+        "SahanRanasingha\\SriLankaHolidays\\Laravel\\SriLankaHolidaysServiceProvider"
+      ],
+      "aliases": {
+        "Holidays": "SahanRanasingha\\SriLankaHolidays\\Laravel\\Facades\\Holidays"
+      }
+    }
+  },
+  "minimum-stability": "stable",
+  "prefer-stable": true
+}
+

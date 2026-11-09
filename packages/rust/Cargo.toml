@@ -1,0 +1,17 @@
+[package]
+name = "sri-lanka-holidays"
+version = "1.0.2"
+edition = "2021"
+authors = ["Sahan Ranasingha <https://github.com/sahanRanasingha>"]
+description = "Official Sri Lanka Public, Bank, and Mercantile holidays (including Full Moon Poya days) for 2026, 2027, and extensible JSON support."
+license = "MIT"
+repository = "https://github.com/sahanRanasingha/sri-lanka-holidays"
+homepage = "https://github.com/sahanRanasingha/sri-lanka-holidays"
+keywords = ["sri-lanka", "holidays", "calendar", "poya", "mercantile"]
+categories = ["date-and-time", "internationalization"]
+readme = "README.md"
+
+[dependencies]
+serde = { version = "1.0", features = ["derive"] }
+serde_json = "1.0"
+

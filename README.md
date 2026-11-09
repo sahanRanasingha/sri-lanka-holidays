@@ -13,6 +13,7 @@ A lightweight, zero-dependency npm package providing official **Sri Lanka Public
 ## 📖 Table of Contents
 
 - [Overview of Sri Lanka Holiday Types](#-overview-of-sri-lanka-holiday-types)
+- [Multi-Language & Framework Packages](#-multi-language--framework-packages)
 - [Features](#-features)
 - [Installation](#-installation)
 - [Quick Start](#-quick-start)
@@ -41,6 +42,22 @@ In Sri Lanka, official holidays are declared under the **Holidays Act, No. 29 of
 
 > **Important Distinction for HR & Payroll Systems:**
 > Certain religious holidays in Sri Lanka—such as **Maha Sivarathri Day**, **Id-Ul-Fitr (Ramazan)**, **Good Friday**, **Id-Ul-Alha (Hadji)**, and **Deepavali**—are **Public and Bank holidays only** (`["Public", "Bank"]`) and are **not** Mercantile holidays. This package makes it simple to filter or check holidays by exact category.
+
+---
+
+## 🌐 Multi-Language & Framework Packages
+
+All libraries in this repository share the same canonical JSON dataset (`data/2026.json`, `data/2027.json`) via `npm run sync`:
+
+| Ecosystem / Framework | Directory | Package / Module |
+| :--- | :--- | :--- |
+| **Node.js / TypeScript** | [`packages/npm`](./packages/npm) | `npm install sri-lanka-holidays` |
+| **PHP & Laravel** | [`packages/laravel`](./packages/laravel) | `composer require sahanranasingha/sri-lanka-holidays` |
+| **.NET / C#** | [`packages/dotnet`](./packages/dotnet) | `dotnet add package SriLankaHolidays` |
+| **Rust** | [`packages/rust`](./packages/rust) | `cargo add sri-lanka-holidays` |
+| **Go** | [`packages/go`](./packages/go) | `go get github.com/sahanRanasingha/sri-lanka-holidays/packages/go` |
+| **Python (Django/FastAPI)** | [`packages/python`](./packages/python) | `pip install sri-lanka-holidays` |
+| **Flutter / Dart** | [`packages/dart`](./packages/dart) | `flutter pub add sri_lanka_holidays` |
 
 ---
 

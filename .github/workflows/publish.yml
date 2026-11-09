@@ -16,6 +16,9 @@ jobs:
   publish:
     name: Test & Publish to npm
     runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: packages/npm
     steps:
       - name: Checkout repository
         uses: actions/checkout@v4

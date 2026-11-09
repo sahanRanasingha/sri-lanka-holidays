@@ -1,0 +1,76 @@
+name: Multi-Ecosystem CI (Node, Laravel, .NET, Rust, Go, Python, Dart)
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+  workflow_dispatch:
+
+jobs:
+  node-php-python:
+    name: Node.js, PHP/Laravel & Python
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22.x'
+      - uses: shivammathur/setup-php@v2
+        with:
+          php-version: '8.3'
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - name: Verify Data Sync & Node Tests
+        run: |
+          npm run sync
+          npm test
+      - name: Run PHP / Laravel Tests
+        run: php packages/laravel/tests/run_tests.php
+      - name: Run Python Tests
+        run: python packages/python/tests/test_holidays.py
+
+  dotnet:
+    name: .NET / C# (NuGet)
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: '8.0.x'
+      - name: Build & Pack .NET Library
+        run: dotnet pack packages/dotnet/SriLankaHolidays/SriLankaHolidays.csproj -c Release
+
+  rust:
+    name: Rust (Crates.io)
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Run Cargo Tests
+        working-directory: packages/rust
+        run: cargo test
+
+  go:
+    name: Go Module
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-go@v5
+        with:
+          go-version: '1.22.x'
+      - name: Run Go Tests
+        working-directory: packages/go
+        run: go test -v ./...
+
+  dart:
+    name: Dart / Flutter (pub.dev)
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: dart-lang/setup-dart@v1
+        with:
+          sdk: stable
+      - name: Run Dart Tests
+        run: dart run packages/dart/test/run_tests.dart
+
