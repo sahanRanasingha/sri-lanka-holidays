@@ -3,4 +3,14 @@ coverage/
 *.log
 .DS_Store
 .env
+.dart_tool/
+pubspec.lock
+target/
+dist/
+build/
+*.egg-info/
+bin/
+obj/
+nupkg/
+
 
